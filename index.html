@@ -2,108 +2,120 @@
 <html lang="az">
 <head>
   <meta charset="UTF-8" />
-  <title>arkadaslik testi</title>
+  <title>arkadaşlık testi</title>
   <style>
     body {
-      margin: 0; padding: 0;
+      margin: 0;
       background: white;
       color: black;
-      font-family: Arial, sans-serif;
+      font-family: sans-serif;
       text-align: center;
       overflow: hidden;
     }
-    #content {
+    #title {
       margin-top: 20vh;
       font-size: 2em;
-      font-weight: bold;
-    }
-    #countdown {
-      font-size: 5em;
-      margin: 20px 0;
-      color: darkred;
     }
     #startBtn {
+      margin-top: 30px;
       font-size: 1.5em;
-      padding: 15px 40px;
-      background: #ff4500;
+      padding: 15px 30px;
+      background-color: red;
       color: white;
       border: none;
       border-radius: 10px;
+      box-shadow: 0 0 10px red;
       cursor: pointer;
-      box-shadow: 0 0 10px #ff4500;
     }
-    #jumpscareOverlay {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100vw; height: 100vh;
-      background: black;
+    #countdown {
+      font-size: 4em;
+      margin-top: 20px;
+    }
+    #glitch {
+      font-size: 1.7em;
+      animation: glitch 0.1s infinite;
       display: none;
-      justify-content: center;
-      align-items: center;
-      z-index: 9999;
+      color: red;
     }
-    #jumpscareOverlay video {
+    @keyframes glitch {
+      0% { transform: translate(1px, 1px); }
+      20% { transform: translate(-1px, -2px); }
+      40% { transform: translate(-3px, 0px); }
+      60% { transform: translate(3px, 2px); }
+      80% { transform: translate(1px, -1px); }
+      100% { transform: translate(-1px, 2px); }
+    }
+    video {
       width: 100vw;
       height: 100vh;
       object-fit: cover;
+      display: none;
+    }
+    #continueBtn {
+      padding: 15px 30px;
+      font-size: 1.2em;
+      background-color: black;
+      color: white;
+      border: 1px solid red;
+      border-radius: 5px;
+      display: none;
     }
   </style>
 </head>
 <body>
-  <div id="content">
-    Rahili ne Kadar İyi Tanıyorsun?
-    <div>
-      <button id="startBtn">Teste Başla🔥</button>
-    </div>
-    <div id="countdown"></div>
-  </div>
-
-  <div id="jumpscareOverlay">
-    <video id="jumpscareVideo" src="jumpscare.mp4" autoplay></video>
-  </div>
+  <div id="title">Rahili nə qədər yaxşı tanıyırsan?</div>
+  <button id="startBtn">Teste Başla🔥</button>
+  <div id="countdown"></div>
+  <div id="glitch">Qorxma... sadəcə izlə... kömək et...</div>
+  <video id="jump1" src="jumpscare1.mp4"></video>
+  <button id="continueBtn">Davam edək?</button>
+  <video id="jump2" src="jumpscare2.mp4"></video>
+  <video id="jump3" src="jumpscare3.mp4"></video>
 
   <script>
-    const startBtn = document.getElementById('startBtn');
-    const countdownEl = document.getElementById('countdown');
-    const jumpscareOverlay = document.getElementById('jumpscareOverlay');
-    const jumpscareVideo = document.getElementById('jumpscareVideo');
+    const startBtn = document.getElementById("startBtn");
+    const countdown = document.getElementById("countdown");
+    const glitch = document.getElementById("glitch");
+    const jump1 = document.getElementById("jump1");
+    const continueBtn = document.getElementById("continueBtn");
+    const jump2 = document.getElementById("jump2");
+    const jump3 = document.getElementById("jump3");
 
-    startBtn.addEventListener('click', () => {
-      startBtn.style.display = 'none';
-      countdownEl.style.color = 'darkred';
+    startBtn.onclick = () => {
+      startBtn.style.display = "none";
+      countdown.textContent = "3";
+      setTimeout(() => countdown.textContent = "2", 1000);
+      setTimeout(() => countdown.textContent = "1", 2000);
+      setTimeout(() => {
+        countdown.style.display = "none";
+        glitch.style.display = "block";
+        let glitchAudio = new Audio("glitch.mp3"); // əgər varsa əlavə elə
+        glitchAudio.volume = 1;
+        glitchAudio.play();
+      }, 3000);
+      setTimeout(() => {
+        glitch.style.display = "none";
+        jump1.style.display = "block";
+        jump1.play();
+      }, 6000);
+      jump1.onended = () => {
+        jump1.style.display = "none";
+        continueBtn.style.display = "inline-block";
+      };
+    };
 
-      let count = 3;
-      countdownEl.textContent = count;
-
-      const countdownInterval = setInterval(() => {
-        count--;
-        if(count === 1) {
-          countdownEl.textContent = count;
-          // 3 saniyə 1-də dayansın
-          setTimeout(() => {
-            clearInterval(countdownInterval);
-            // Qırmızı ekran glitch effekti
-            countdownEl.style.display = 'none';
-            document.body.style.backgroundColor = 'darkred';
-
-            // 5 saniyə gözlə sonra jumpscare göstər
-            setTimeout(() => {
-              jumpscareOverlay.style.display = 'flex';
-              jumpscareVideo.play();
-              // Video bitdikdən sonra ekran qara qalsın
-              jumpscareVideo.onended = () => {
-                jumpscareOverlay.style.display = 'none';
-                document.body.style.backgroundColor = 'black';
-                countdownEl.textContent = '';
-              };
-            }, 5000);
-
-          }, 3000);
-        } else {
-          countdownEl.textContent = count;
-        }
-      }, 1000);
-    });
+    continueBtn.onclick = () => {
+      continueBtn.style.display = "none";
+      jump2.style.display = "block";
+      jump2.play();
+      jump2.onended = () => {
+        jump2.style.display = "none";
+        setTimeout(() => {
+          jump3.style.display = "block";
+          jump3.play();
+        }, 4000);
+      };
+    };
   </script>
 </body>
 </html>
