@@ -5,172 +5,295 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>arkadaslik testi</title>
 <style>
-  body {
+  html, body {
     margin:0; padding:0;
+    height: 100%;
     background: white;
-    font-family: Arial, sans-serif;
-    text-align: center;
-    user-select: none;
     overflow: hidden;
+    font-family: 'Courier New', monospace;
   }
   #container {
-    margin-top: 15vh;
+    position: relative;
+    height: 100vh;
+    width: 100vw;
+    background: white;
+    color: black;
+    text-align: center;
+    user-select: none;
   }
-  h1 {
+  #startScreen {
+    position: absolute;
+    top: 30vh;
+    width: 100%;
+  }
+  #startScreen h1 {
     font-size: 2.5em;
-    color: #222;
     margin-bottom: 30px;
+    font-weight: bold;
   }
-  #scareBtn {
-    padding: 20px 50px;
+  #startBtn {
     font-size: 1.8em;
+    padding: 15px 40px;
     background: #ff4500;
     color: white;
     border: none;
-    border-radius: 10px;
+    border-radius: 12px;
     cursor: pointer;
-    box-shadow: 0 0 20px #ff4500;
+    box-shadow: 0 0 10px #ff4500;
     transition: background 0.3s ease;
   }
-  #scareBtn:hover {
+  #startBtn:hover {
     background: #e03e00;
   }
-  #countdown {
-    font-size: 5em;
-    color: #aa0000;
-    margin-top: 40px;
-    font-weight: bold;
-  }
-  /* Glitch effect */
-  #glitch {
-    position: fixed;
-    top:0; left:0;
-    width: 100vw; height: 100vh;
-    background: #a00;
-    opacity: 0;
-    pointer-events: none;
-    animation: glitchShake 0.1s infinite;
-    z-index: 9998;
-  }
-  @keyframes glitchShake {
-    0% { transform: translate(1px, 1px) rotate(0deg); }
-    10% { transform: translate(-1px, -2px) rotate(-1deg); }
-    20% { transform: translate(-3px, 0px) rotate(1deg); }
-    30% { transform: translate(3px, 2px) rotate(0deg); }
-    40% { transform: translate(1px, -1px) rotate(1deg); }
-    50% { transform: translate(-1px, 2px) rotate(-1deg); }
-    60% { transform: translate(-3px, 1px) rotate(0deg); }
-    70% { transform: translate(3px, 1px) rotate(-1deg); }
-    80% { transform: translate(-1px, -1px) rotate(1deg); }
-    90% { transform: translate(1px, 2px) rotate(0deg); }
-    100% { transform: translate(1px, -2px) rotate(-1deg); }
-  }
 
-  /* Jumpscare video fullscreen container */
-  #jumpscare {
-    display: none;
+  #videoContainer {
     position: fixed;
     top:0; left:0;
     width: 100vw;
     height: 100vh;
     background: black;
-    z-index: 10000;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
   }
-  #jumpscare video {
+  video {
     width: 100%;
     height: 100%;
     object-fit: cover;
+  }
+
+  .overlayText {
+    position: absolute;
+    top: 10%;
+    left: 50%;
+    transform: translateX(-50%);
+    color: #ff0000;
+    font-weight: 900;
+    font-size: 3em;
+    text-shadow:
+      0 0 5px #ff0000,
+      0 0 10px #ff0000,
+      0 0 20px #ff0000,
+      0 0 40px #ff0000;
+    pointer-events: none;
+    user-select: none;
+    max-width: 90vw;
+    white-space: nowrap;
+  }
+
+  #glitchEffect {
+    position: fixed;
+    top:0; left:0;
+    width: 100vw;
+    height: 100vh;
+    background: black;
+    display: none;
+    z-index: 9999;
+    animation: glitchAnim 0.2s infinite;
+  }
+
+  @keyframes glitchAnim {
+    0% {
+      filter: hue-rotate(0deg) brightness(1);
+    }
+    20% {
+      filter: hue-rotate(20deg) brightness(1.2);
+    }
+    40% {
+      filter: hue-rotate(-20deg) brightness(0.8);
+    }
+    60% {
+      filter: hue-rotate(10deg) brightness(1.1);
+    }
+    80% {
+      filter: hue-rotate(-10deg) brightness(0.9);
+    }
+    100% {
+      filter: hue-rotate(0deg) brightness(1);
+    }
+  }
+
+  #continueBtn {
+    position: absolute;
+    bottom: 15%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: transparent;
+    border: 2px solid #ff0000;
+    padding: 12px 30px;
+    color: #ff0000;
+    font-weight: bold;
+    font-size: 1.5em;
+    cursor: pointer;
+    filter: drop-shadow(0 0 5px #ff0000);
+    border-radius: 10px;
+    user-select: none;
+  }
+
+  #glitchText {
+    position: fixed;
+    top: 5%;
+    left: 50%;
+    transform: translateX(-50%);
+    color: #ff0000;
+    font-weight: 900;
+    font-size: 2.5em;
+    text-shadow:
+      0 0 5px #ff0000,
+      0 0 10px #ff0000,
+      0 0 20px #ff0000;
+    pointer-events: none;
+    user-select: none;
+    white-space: nowrap;
   }
 </style>
 </head>
 <body>
 
 <div id="container">
-  <h1>Rahili ne Kadar iyi tanıyorsun?</h1>
-  <button id="scareBtn">Teste Başla🔥</button>
-  <div id="countdown"></div>
-</div>
+  <div id="startScreen">
+    <h1>Rahili ne Kadar iyi tanıyorsun?</h1>
+    <button id="startBtn">Teste Başla🔥</button>
+  </div>
 
-<div id="glitch"></div>
+  <div id="videoContainer">
+    <video id="videoPlayer" playsinline></video>
+    <div class="overlayText" id="overlayText"></div>
+  </div>
 
-<div id="jumpscare">
-  <video id="jumpVideo" src="jumpscare3.mp4" preload="auto"></video>
+  <div id="glitchEffect"></div>
+
+  <button id="continueBtn" style="display:none;">Davam edək?</button>
+  <div id="glitchText" style="display:none;"></div>
 </div>
 
 <script>
-  const scareBtn = document.getElementById('scareBtn');
-  const countdownEl = document.getElementById('countdown');
-  const glitchEl = document.getElementById('glitch');
-  const jumpscareDiv = document.getElementById('jumpscare');
-  const jumpVideo = document.getElementById('jumpVideo');
+  const startBtn = document.getElementById('startBtn');
+  const startScreen = document.getElementById('startScreen');
+  const videoContainer = document.getElementById('videoContainer');
+  const videoPlayer = document.getElementById('videoPlayer');
+  const overlayText = document.getElementById('overlayText');
+  const glitchEffect = document.getElementById('glitchEffect');
+  const continueBtn = document.getElementById('continueBtn');
+  const glitchText = document.getElementById('glitchText');
 
-  function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
+  // Videolar və yazılar
+  const videos = [
+    {
+      src: 'jumpscare1.mp4',
+      text: "Sadəcə dost olmaq istəyir",
+      textStyle: "bold red glow",
+    },
+    {
+      src: 'jumpscare2.mp4',
+      text: "Onlar gəliblər bayırda səni gözləyirlər!",
+      textStyle: "bold red glow",
+    },
+    {
+      src: 'jumpscare3.mp4',
+      text: "", // Bu video üçün yazı lazım deyil
+    }
+  ];
+
+  let currentStep = 0;
+
+  function showVideo(index) {
+    const videoData = videos[index];
+    videoPlayer.src = videoData.src;
+    videoPlayer.currentTime = 0;
+    videoPlayer.volume = 1.0;
+    overlayText.textContent = videoData.text || '';
+    overlayText.style.display = videoData.text ? 'block' : 'none';
+
+    // Show video container
+    videoContainer.style.display = 'flex';
+    startScreen.style.display = 'none';
+    continueBtn.style.display = 'none';
+    glitchEffect.style.display = 'none';
+    glitchText.style.display = 'none';
+
+    videoPlayer.play();
   }
 
-  async function startSequence() {
-    scareBtn.disabled = true;
-    countdownEl.textContent = '';
-    let count = 3;
+  function glitchPhase(duration, cb) {
+    glitchEffect.style.display = 'block';
+    glitchText.style.display = 'block';
+    glitchText.textContent = "Glitch başladı...";
+    // Xarabalıq yazısı  qırmızı parıltı ilə
+    glitchText.style.color = '#ff0000';
+    glitchText.style.textShadow = '0 0 10px #ff0000, 0 0 20px #ff0000, 0 0 30px #ff0000';
 
-    // Geri sayım 3-2-1
-    while (count > 0) {
-      countdownEl.textContent = count;
-      await sleep(1000);
-      count--;
-    }
+    setTimeout(() => {
+      glitchEffect.style.display = 'none';
+      glitchText.style.display = 'none';
+      cb();
+    }, duration);
+  }
 
-    countdownEl.textContent = '1';
-    await sleep(3000); // 1-də 3 saniyə dayanma
+  function showContinue(text, cb) {
+    glitchEffect.style.display = 'none';
+    glitchText.style.display = 'none';
+    continueBtn.style.display = 'block';
+    continueBtn.textContent = text;
 
-    // Glitch effekti başlayır
-    glitchEl.style.opacity = '0.8';
-
-    // Titrəyiş effekti üçün class aktivləşdir
-    glitchEl.style.pointerEvents = 'auto';
-
-    // 5 saniyə glitchdə qal
-    await sleep(5000);
-
-    // Glitch bitir
-    glitchEl.style.opacity = '0';
-    glitchEl.style.pointerEvents = 'none';
-
-    // Jumpscare videonu göstər
-    jumpscareDiv.style.display = 'block';
-
-    // Səsi aç
-    jumpVideo.muted = false;
-    jumpVideo.volume = 1.0;
-
-    // Fullscreen aç (mobil və desktop üçün)
-    if (jumpscareDiv.requestFullscreen) {
-      jumpscareDiv.requestFullscreen();
-    } else if (jumpscareDiv.webkitRequestFullscreen) {
-      jumpscareDiv.webkitRequestFullscreen();
-    } else if (jumpscareDiv.msRequestFullscreen) {
-      jumpscareDiv.msRequestFullscreen();
-    }
-
-    jumpVideo.play();
-
-    // Video bitdikdə jumpscare gizlənir və fullscreen çıxılır
-    jumpVideo.onended = () => {
-      jumpscareDiv.style.display = 'none';
-      if (document.fullscreenElement) {
-        document.exitFullscreen();
-      } else if (document.webkitFullscreenElement) {
-        document.webkitExitFullscreen();
-      } else if (document.msFullscreenElement) {
-        document.msExitFullscreen();
-      }
-      scareBtn.disabled = false;
-      countdownEl.textContent = '';
+    continueBtn.onclick = () => {
+      continueBtn.style.display = 'none';
+      cb();
     };
   }
 
-  scareBtn.addEventListener('click', startSequence);
-</script>
+  startBtn.onclick = () => {
+    currentStep = 0;
+    showVideo(currentStep);
 
+    videoPlayer.onended = () => {
+      if (currentStep === 0) {
+        // Birinci video bitdi - ekran qaralır və davam edək düyməsi
+        videoContainer.style.display = 'none';
+        startScreen.style.display = 'none';
+        overlayText.style.display = 'none';
+        showContinue("Davam edək?", () => {
+          glitchPhase(3000, () => {
+            currentStep++;
+            showVideo(currentStep);
+          });
+        });
+      } else if (currentStep === 1) {
+        // İkinci video bitdi - glitch 4 saniyə səssiz
+        videoContainer.style.display = 'none';
+        glitchPhase(4000, () => {
+          currentStep++;
+          showVideo(currentStep);
+
+          videoPlayer.volume = 1.0;
+          videoPlayer.play();
+        });
+      } else if (currentStep === 2) {
+        // Son video bitdi - ekran qara
+        videoContainer.style.display = 'none';
+        glitchEffect.style.display = 'none';
+        glitchText.style.display = 'none';
+        continueBtn.style.display = 'none';
+
+        // Qara ekran
+        const blackScreen = document.createElement('div');
+        blackScreen.style.position = 'fixed';
+        blackScreen.style.top = '0';
+        blackScreen.style.left = '0';
+        blackScreen.style.width = '100vw';
+        blackScreen.style.height = '100vh';
+        blackScreen.style.backgroundColor = 'black';
+        blackScreen.style.zIndex = '10000';
+        document.body.appendChild(blackScreen);
+      }
+    };
+
+    // Hər video üçün səsin başda kəsilməməsi üçün bu əlavə
+    videoPlayer.onplay = () => {
+      videoPlayer.volume = 1.0;
+    };
+  };
+</script>
 </body>
 </html>
