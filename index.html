@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+  <meta charset="UTF-8" />
+  <title>arkadaslik testi</title>
+  <style>
+    body {
+      margin: 0; padding: 0;
+      background: white;
+      color: black;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      overflow: hidden;
+    }
+    #content {
+      margin-top: 20vh;
+      font-size: 2em;
+      font-weight: bold;
+    }
+    #countdown {
+      font-size: 5em;
+      margin: 20px 0;
+      color: darkred;
+    }
+    #startBtn {
+      font-size: 1.5em;
+      padding: 15px 40px;
+      background: #ff4500;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      box-shadow: 0 0 10px #ff4500;
+    }
+    #jumpscareOverlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background: black;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+    #jumpscareOverlay video {
+      width: 100vw;
+      height: 100vh;
+      object-fit: cover;
+    }
+  </style>
+</head>
+<body>
+  <div id="content">
+    Rahili ne Kadar İyi Tanıyorsun?
+    <div>
+      <button id="startBtn">Teste Başla🔥</button>
+    </div>
+    <div id="countdown"></div>
+  </div>
+
+  <div id="jumpscareOverlay">
+    <video id="jumpscareVideo" src="jumpscare.mp4" autoplay></video>
+  </div>
+
+  <script>
+    const startBtn = document.getElementById('startBtn');
+    const countdownEl = document.getElementById('countdown');
+    const jumpscareOverlay = document.getElementById('jumpscareOverlay');
+    const jumpscareVideo = document.getElementById('jumpscareVideo');
+
+    startBtn.addEventListener('click', () => {
+      startBtn.style.display = 'none';
+      countdownEl.style.color = 'darkred';
+
+      let count = 3;
+      countdownEl.textContent = count;
+
+      const countdownInterval = setInterval(() => {
+        count--;
+        if(count === 1) {
+          countdownEl.textContent = count;
+          // 3 saniyə 1-də dayansın
+          setTimeout(() => {
+            clearInterval(countdownInterval);
+            // Qırmızı ekran glitch effekti
+            countdownEl.style.display = 'none';
+            document.body.style.backgroundColor = 'darkred';
+
+            // 5 saniyə gözlə sonra jumpscare göstər
+            setTimeout(() => {
+              jumpscareOverlay.style.display = 'flex';
+              jumpscareVideo.play();
+              // Video bitdikdən sonra ekran qara qalsın
+              jumpscareVideo.onended = () => {
+                jumpscareOverlay.style.display = 'none';
+                document.body.style.backgroundColor = 'black';
+                countdownEl.textContent = '';
+              };
+            }, 5000);
+
+          }, 3000);
+        } else {
+          countdownEl.textContent = count;
+        }
+      }, 1000);
+    });
+  </script>
+</body>
+</html>
